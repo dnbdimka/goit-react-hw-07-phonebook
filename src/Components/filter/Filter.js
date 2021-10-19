@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { filteredContacts } from "../../redux/contacts/contactsActions";
 import { FilterStyled } from "./FilterStyled";
 
-const Filter = ({ onFilterInput }) => {
+const Filter = ({ onFilterInput, filter }) => {
   const onFilterInputChange = (e) => {
     const { value } = e.target;
 
@@ -14,8 +14,13 @@ const Filter = ({ onFilterInput }) => {
     <>
       <FilterStyled>
         <div className="filter-box">
-          <input id="filterInput" type="text" onChange={onFilterInputChange} />
-          <label htmlFor="filterInput">Find contacts by name</label>
+          <input
+            value={filter}
+            id="filterInput"
+            type="text"
+            onChange={onFilterInputChange}
+          />
+          <label htmlFor="filterInput">Find contacts by name or number</label>
         </div>
       </FilterStyled>
     </>

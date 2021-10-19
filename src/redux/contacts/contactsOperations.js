@@ -1,14 +1,18 @@
 import axios from "axios";
 import {
-  getContacts,
-  addNewContact,
-  removeContactById,
-  //   filteredContacts,
-  setLoader,
+  getContactsRequest,
+  addNewContactSucces,
+  addNewContactRequest,
+  getContactsSucces,
+  addNewContactError,
+  getContactsError,
+  removeContactByIdRequest,
+  removeContactByIdSucces,
+  removeContactByIdError,
 } from "./contactsActions";
 
 const getContactsOperation = () => async (dispatch) => {
-  dispatch(setLoader());
+  dispatch(getContactsRequest());
   try {
     const response = await axios.get(
       "https://phonebook-2a001-default-rtdb.firebaseio.com/contacts.json"
@@ -18,41 +22,35 @@ const getContactsOperation = () => async (dispatch) => {
         id: key,
         ...response.data[key],
       }));
-      dispatch(getContacts(contacts));
+      dispatch(getContactsSucces(contacts));
     }
   } catch (error) {
-    console.log(error);
-  } finally {
-    dispatch(setLoader());
+    dispatch(getContactsError(error.response.data.error.message));
   }
 };
 
 const addContactOperation = (newContact) => async (dispatch) => {
-  dispatch(setLoader());
+  dispatch(addNewContactRequest());
   try {
     const response = await axios.post(
       "https://phonebook-2a001-default-rtdb.firebaseio.com/contacts.json",
       newContact
     );
-    dispatch(addNewContact({ ...newContact, id: response.data.name }));
+    dispatch(addNewContactSucces({ ...newContact, id: response.data.name }));
   } catch (error) {
-    console.log(error);
-  } finally {
-    dispatch(setLoader());
+    dispatch(addNewContactError(error.response.data.error.message));
   }
 };
 
 const removeContactOperation = (id) => async (dispatch) => {
-  dispatch(setLoader());
+  dispatch(removeContactByIdRequest());
   try {
     await axios.delete(
       `https://phonebook-2a001-default-rtdb.firebaseio.com/contacts/${id}.json`
     );
-    dispatch(removeContactById(id));
+    dispatch(removeContactByIdSucces(id));
   } catch (error) {
-    console.log(error);
-  } finally {
-    dispatch(setLoader());
+    dispatch(removeContactByIdError(error.response.data.error.message));
   }
 };
 

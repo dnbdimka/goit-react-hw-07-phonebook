@@ -10,11 +10,18 @@ import {
   removeContactOperation,
 } from "../redux/contacts/contactsOperations";
 import ContactLoader from "./contactLoader/ContactLoader";
+import {
+  contactsSelector,
+  filteredContactsSelector,
+  filterSelector,
+  loaderSelector,
+} from "../redux/contacts/contactsSelectors";
 
 const App = () => {
-  const contacts = useSelector((state) => state.contacts.items);
-  const filter = useSelector((state) => state.contacts.filter);
-  const isLoading = useSelector((state) => state.contacts.isLoading);
+  const contacts = useSelector(contactsSelector);
+  const filter = useSelector(filterSelector);
+  const isLoading = useSelector(loaderSelector);
+  const filteredContacts = useSelector(filteredContactsSelector);
 
   const dispatch = useDispatch();
 
@@ -22,8 +29,16 @@ const App = () => {
     dispatch(getContactsOperation());
   }, [dispatch]);
 
-  const onAddNewContact = (contact) => {
-    dispatch(addContactOperation(contact));
+  const onAddNewContact = (newContact) => {
+    if (
+      contacts.some((contact) =>
+        contact.name.toLowerCase().includes(newContact.name.toLowerCase())
+      )
+    ) {
+      alert(`${newContact.name} is already in contacts.`);
+      return;
+    }
+    dispatch(addContactOperation(newContact));
   };
   const onRemoveContactById = (id) => {
     dispatch(removeContactOperation(id));
@@ -32,15 +47,22 @@ const App = () => {
   return (
     <>
       {isLoading && <ContactLoader />}
-      <ContactForm onAddNewContact={onAddNewContact} />
-      <ContactsFilterAndListWrapper>
-        {contacts.length !== 0 && <Filter filter={filter} />}
 
-        <ContactList
-          contacts={contacts}
-          filterValue={filter}
-          onRemoveContactById={onRemoveContactById}
-        />
+      <ContactForm onAddNewContact={onAddNewContact} />
+
+      <ContactsFilterAndListWrapper>
+        {contacts.length !== 0 ? (
+          <>
+            <Filter filter={filter} />
+            <ContactList
+              contacts={filteredContacts}
+              filterValue={filter}
+              onRemoveContactById={onRemoveContactById}
+            />{" "}
+          </>
+        ) : (
+          <p>You have no contacts yet ;)</p>
+        )}
       </ContactsFilterAndListWrapper>
     </>
   );

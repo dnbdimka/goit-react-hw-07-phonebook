@@ -44,4 +44,18 @@ export const ContactsListStyle = styled.div`
     border-radius: 5px solid rgba(244, 3, 3, 0.5);
     box-shadow: 0 0 5px rgba(244, 3, 3, 0.5), 0 0 20px rgba(244, 3, 3, 0.5);
   }
+  .my-node-enter {
+    opacity: 0;
+  }
+  .my-node-enter-active {
+    opacity: 1;
+    transition: opacity 2000ms ease-in-out;
+  }
+  .my-node-exit {
+    opacity: 1;
+  }
+  .my-node-exit-active {
+    opacity: 0;
+    transition: opacity 2000ms ease-in-out;
+  }
 `;

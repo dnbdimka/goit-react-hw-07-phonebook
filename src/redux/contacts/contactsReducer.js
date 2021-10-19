@@ -1,41 +1,53 @@
 import { combineReducers } from "redux";
 import { createReducer } from "@reduxjs/toolkit";
 import {
-  getContacts,
-  addNewContact,
-  removeContactById,
+  getContactsRequest,
+  getContactsSucces,
+  getContactsError,
+  addNewContactRequest,
+  addNewContactSucces,
+  addNewContactError,
   filteredContacts,
-  setLoader,
+  removeContactByIdSucces,
+  removeContactByIdRequest,
+  removeContactByIdError,
 } from "./contactsActions";
-// import { ADDCONTACT, REMOVECONTACT, FILTER } from "./contactsTypes";
 
 const contactsListReducer = createReducer([], {
-  [getContacts]: (_, action) => action.payload,
-  [addNewContact]: (state, { payload }) => {
-    // if (
-    //   state.some((contact) =>
-    //     contact.name.toLowerCase().includes(payload.name.toLowerCase())
-    //   )
-    // ) {
-    //   alert(`${payload.name} is already in contacts.`);
-    //   return;
-    // }
+  [getContactsSucces]: (_, action) => action.payload,
+  [addNewContactSucces]: (state, { payload }) => {
     return [...state, payload];
   },
-  [removeContactById]: (state, { payload }) =>
+  [removeContactByIdSucces]: (state, { payload }) =>
     state.filter((contact) => contact.id !== payload),
 });
+
 const contactsFilterReducer = createReducer("", {
   [filteredContacts]: (_, { payload }) => payload,
 });
 
 const contactsLoaderReducer = createReducer(false, {
-  [setLoader]: (state) => !state,
+  [getContactsRequest]: () => true,
+  [getContactsSucces]: () => false,
+  [getContactsError]: () => false,
+  [addNewContactRequest]: () => true,
+  [addNewContactSucces]: () => false,
+  [addNewContactError]: () => false,
+  [removeContactByIdRequest]: () => true,
+  [removeContactByIdSucces]: () => false,
+  [removeContactByIdError]: () => false,
+});
+
+const contactsErrorReducer = createReducer("", {
+  [getContactsError]: (_, action) => action.payload,
+  [addNewContactError]: (_, action) => action.payload,
+  [removeContactByIdError]: (_, action) => action.payload,
 });
 
 const contactsReducer = combineReducers({
   items: contactsListReducer,
   filter: contactsFilterReducer,
   isLoading: contactsLoaderReducer,
+  error: contactsErrorReducer,
 });
 export default contactsReducer;
